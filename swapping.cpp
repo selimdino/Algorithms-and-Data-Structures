@@ -28,10 +28,41 @@ class IntCell{
         explicit IntCell(int  initialValue = 0)
             { storedValue = new int { initialValue }; }
         
+        ~IntCell( )
+        { delete storedValue; }                                                 // Destructor
+        
+        IntCell( const IntCell & rhs) // takes another IntCell object as a input, the const ensures that 'rhs' is not modified inside the copy constructor
+        { storedValue = new int{ *rhs.storedValue };}                           // Copy constructor
+
+        IntCell( IntCell && rhs ) : storedValue{ rhs.storedValue }              // Move constructor
+            { rhs.storedValue = nullptr; }
+        
+        IntCell & operator= ( const IntCell & rhs )                             // Copy assignment
+        {
+            if ( this != &rhs )    // avoid self-assignment
+                *storedValue = *rhs.storedValue; // performing a deep copy
+            return *this;
+        }
+
+        IntCell & operator= ( IntCell && rhs )                                 // Move assignment
+        {
+            std::swap(storedValue, rhs.storedValue);
+            return *this;
+        }
+
+
         int read() const   
             { return *storedValue; }
         void write( int x )
             { *storedValue = x; }
+        
+        // If swap is implemented using basic copy algorithm, the copy-and-swap idiom would not work, because there would be non-terminating recursion
+        IntCell & operator= (const IntCell & rhs)
+        {
+            IntCell copy = rhs; // Places a copy of rhs into copy using the copy constructor
+            std::swap( *this, copy ); // Copy is swapped into *this, placing the old contents into copy
+            return *this;
+        }
             
     private:
         int *storedValue;

@@ -46,7 +46,7 @@ class IntCell{
 
         IntCell & operator= ( IntCell && rhs )                                 // Move assignment
         {
-            std::swap(storedValue, rhs.storedValue);
+            std::swap(storedValue, rhs.storedValue); // member-by-member swap-
             return *this;
         }
 
